@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "fiscai-octopus-api-connector": {
+      "command": "/ABSOLUTE/PATH/TO/fiscai-octopus-api-connector/.venv/bin/python",
+      "args": [
+        "/ABSOLUTE/PATH/TO/fiscai-octopus-api-connector/server/run_server.py"
+      ],
+      "env": {
+        "OCTOPUS_SOFTWARE_HOUSE_UUID": "YOUR_OCTOPUS_SOFTWARE_HOUSE_UUID",
+        "OCTOPUS_USER": "YOUR_OCTOPUS_USER",
+        "OCTOPUS_PASSWORD": "YOUR_OCTOPUS_PASSWORD",
+        "OCTOPUS_CACHE_KEY": "YOUR_OCTOPUS_CACHE_KEY",
+        "OCTOPUS_LOCALE_ID": "1"
+      }
+    }
+  }
+}
