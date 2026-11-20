@@ -1,0 +1,12 @@
+FISCAi Octopus API Connector
+Copyright 2026 Askin Alci
+
+VERPLICHTE NAAMSVERMELDING (Apache License 2.0, sectie 4(d)):
+
+    Powered by FISCALCI Accounting & Tax (Askin Alci)
+
+Deze vermelding moet ongewijzigd en volledig behouden blijven in elke kopie of afgeleide versie van dit werk: in dit NOTICE-bestand, in README.md, in de documentatie en in de door het werk gegenereerde uitvoer (JSON-exports, dossieroverdracht, overzichten, conceptmails). De MCP-server controleert de exacte tekst bij het opstarten; JSON-exports en de README van een dossieroverdracht worden zonder die exacte tekst geweigerd.
+
+Dit werk bevat de gedeelde kern "FISCAi Accounting API Core" (server/vendor/accounting_api_core), eveneens Apache-2.0, Copyright 2026 Askin Alci.
+
+Octopus is een merk van de rechthebbende; dit pakket is niet door de rechthebbende goedgekeurd. De endpointlijst in spec/ en postman/ is afgeleid van de publiek gepubliceerde OpenAPI-specificatie op service.inaras.be.
