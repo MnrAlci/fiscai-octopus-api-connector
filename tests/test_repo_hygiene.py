@@ -9,6 +9,11 @@ from pathlib import Path
 
 import pytest
 
+try:
+    import tomllib
+except ModuleNotFoundError:          # Python 3.10
+    import tomli as tomllib
+
 ROOT = Path(__file__).resolve().parent.parent
 ATTR = "Powered by FISCALCI Accounting & Tax (Askin Alci)"
 TEXT_EXT = {".py", ".md", ".mdc", ".txt", ".json", ".toml", ".yml", ".yaml", ".cfg", ".ini", ".ps1", ".sh", ".example", ".ics", ".svg", ""}
@@ -82,7 +87,6 @@ def test_no_publisher_names_in_docs():
 
 
 def test_versions_consistent():
-    import tomllib
     v = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
     from octopus_mcp import __version__
     assert __version__ == v
@@ -97,7 +101,6 @@ def test_naming():
     pj = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
     assert pj["name"] == "fiscai-octopus-api-connector"
     assert "FISCAi Octopus API Connector" in (ROOT / "README.md").read_text(encoding="utf-8")
-    import tomllib
     proj = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     assert "octopus-api-connector" in proj["scripts"]
     assert proj["license"] in ("Apache-2.0", {"text": "Apache-2.0"}) or "Apache" in str(proj["license"])
