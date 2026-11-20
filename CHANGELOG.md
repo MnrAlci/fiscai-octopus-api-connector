@@ -12,6 +12,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 - Dependabot configuration: grouped weekly updates with commit prefixes.
 
 ### Notes
+- README (EN/NL) now states clearly that the connector is not yet tested against a live Octopus dossier; feedback welcome through issues.
 - Tested offline against a mocked API built from the official specification. Not yet validated against a live Octopus dossier (see `docs/OPEN-QUESTIONS.md`).
 
 ## [0.1.0] - 2026-11-20

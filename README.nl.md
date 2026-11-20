@@ -12,6 +12,8 @@ Powered by FISCALCI Accounting & Tax (Askin Alci)
 
 Auteur: Askin Alci
 
+> **Nog niet getest tegen een live Octopus-dossier.** Deze connector is alleen getest tegen een nagebootste API op basis van de officiële specificatie (Octopus heeft geen sandbox). Feedback is welkom via [GitHub-issues](https://github.com/MnrAlci/fiscai-octopus-api-connector/issues). Open punten: `docs/OPEN-QUESTIONS.md`.
+
 > Bedoeld voor Belgische boekhouders/accountants; gebaseerd op Belgische boekhoud- en btw-regels (MAR, Belgisch btw-stelsel). Gebruik buiten België: verifieer zelf de lokale regels.
 
 ## Over
