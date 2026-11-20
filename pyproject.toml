@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fiscai-octopus-api-connector"
+version = "0.1.0"
+description = "Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf and other MCP clients): read-only access to the Octopus accounting REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. Powered by FISCALCI Accounting & Tax (Askin Alci)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "Askin Alci"}]
+keywords = ["mcp", "mcp-server", "model-context-protocol", "octopus", "accounting", "bookkeeping", "belgium", "vat", "mar", "read-only"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Natural Language :: Dutch",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+dependencies = ["httpx>=0.27", "cryptography>=41"]
+
+[project.optional-dependencies]
+parquet = ["pyarrow"]
+
+[project.urls]
+Homepage = "https://github.com/MnrAlci/fiscai-octopus-api-connector"
+Documentation = "https://github.com/MnrAlci/fiscai-octopus-api-connector/tree/main/docs"
+Repository = "https://github.com/MnrAlci/fiscai-octopus-api-connector"
+Issues = "https://github.com/MnrAlci/fiscai-octopus-api-connector/issues"
+Changelog = "https://github.com/MnrAlci/fiscai-octopus-api-connector/blob/main/CHANGELOG.md"
+
+[project.scripts]
+octopus-api-connector = "octopus_mcp.cli:main"
+# Same name as the package, so `uvx fiscai-octopus-api-connector` starts the MCP server (stdio).
+fiscai-octopus-api-connector = "octopus_mcp.server:main"
+
+[tool.setuptools]
+packages = ["octopus_mcp", "accounting_api_core", "accounting_api_core.automation", "accounting_api_core.helpers"]
+
+[tool.setuptools.package-dir]
+octopus_mcp = "server/octopus_mcp"
+accounting_api_core = "server/vendor/accounting_api_core"
+
+[tool.ruff]
+line-length = 180
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E9", "F", "B006", "B008"]
+
+[tool.pytest.ini_options]
+pythonpath = ["server", "server/vendor"]
+testpaths = ["tests"]

@@ -1,0 +1,2494 @@
+{
+  "info": {
+    "_postman_id": "0cfb4875-51c9-5a17-8193-d06f059421da",
+    "name": "FISCAi Octopus API Connector",
+    "description": "Alleen-lezen Postman-collectie voor de Octopus REST API, gegenereerd uit de officiële OpenAPI-spec (https://service.inaras.be/octopus-rest-api/v1/openapi.json, versie 1.0). 50 lees-operaties plus aanmelden en dossiertoken. Let op: zeer lage daglimieten per endpoint (bv. 2 per dag voor rekeningen en btw-codes). Geen sandbox: gebruik het demodossier. Geen schrijf-, Management- of file-import-calls. Bedoeld voor Belgische boekhouders; buiten België: verifieer zelf de lokale regels. Powered by FISCALCI Accounting & Tax (Askin Alci)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "1a5b2721-a484-5dd5-8121-06c05af6cae3",
+      "name": "0. Aanmelden (token, 10 min geldig)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const j = pm.response.json();",
+              "if (j.token) { pm.collectionVariables.set('token', j.token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "softwareHouseUuid",
+            "value": "{{softwareHouseUuid}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user\": \"{{user}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/authentication",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "authentication"
+          ]
+        },
+        "description": "POST /authentication met header softwareHouseUuid en body {user, password}. Antwoord {token}, 10 minuten geldig."
+      }
+    },
+    {
+      "id": "3e58c024-d662-5932-a30b-a8eac578c4cf",
+      "name": "1. Dossiertoken (10 min geldig)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const j = pm.response.json();",
+              "if (j.Dossiertoken) { pm.collectionVariables.set('dossierToken', j.Dossiertoken); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Token",
+            "value": "{{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/dossiers?dossierId={{dossierId}}&localeId={{localeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "dossiers"
+          ],
+          "query": [
+            {
+              "key": "dossierId",
+              "value": "{{dossierId}}"
+            },
+            {
+              "key": "localeId",
+              "value": "{{localeId}}"
+            }
+          ]
+        },
+        "description": "POST /dossiers?dossierId=&localeId= met header Token. Antwoord {Dossiertoken}; daarna header dossierToken. Daglimiet 150."
+      }
+    },
+    {
+      "id": "40af40ca-e779-5cff-b970-fd130e3d5551",
+      "name": "about",
+      "item": [
+        {
+          "id": "c6056a79-c864-5fbd-ba7c-3e1642f42de9",
+          "name": "GET /about/version",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/about/version",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "about",
+                "version"
+              ]
+            },
+            "description": "Get Api version. Daglimiet volgens de officiële spec: niet vermeld per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "63409dd2-e895-5d11-b11f-0fe6122e5a4d",
+      "name": "accounts",
+      "item": [
+        {
+          "id": "fcc52d2e-573b-5590-96f9-2036dc10ba4d",
+          "name": "GET /dossiers/{dossierId}/accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/accounts?bookyearId={{bookyearId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "accounts"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Accounts. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "3eaa8c7e-f7ae-5ced-bdd6-23aad224446e",
+          "name": "GET /dossiers/{dossierId}/accounts/amounts/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/accounts/amounts/modified",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "accounts",
+                "amounts",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Modified Account Amounts. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "c70cfb77-ffa6-5dc7-94a8-7aee8c881656",
+          "name": "GET /dossiers/{dossierId}/accounts/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/accounts/modified?modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "accounts",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Modified Accounts. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "46cfb5dc-73e2-5f3d-b1dc-1766e128c406",
+      "name": "balancings",
+      "item": [
+        {
+          "id": "b468b287-0a7c-5ee9-ac57-e5ff6c1b6c7a",
+          "name": "GET /dossiers/{dossierId}/balancings/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/balancings/modified?modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "balancings",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified balancings. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "7da07432-710b-5d8d-b768-6fe1e8a281fc",
+      "name": "bank",
+      "item": [
+        {
+          "id": "0bd21cd3-f143-5260-a15b-8c31dd500ead",
+          "name": "GET /dossiers/{dossierId}/bank/enveloppes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bank/enveloppes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bank",
+                "enveloppes"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Retrieve all envelopes. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "01805c99-040e-55a7-9aef-35868902427d",
+          "name": "GET /dossiers/{dossierId}/bank/enveloppes/{enveloppeKeyId}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bank/enveloppes/:enveloppeKeyId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bank",
+                "enveloppes",
+                ":enveloppeKeyId"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "enveloppeKeyId",
+                  "value": "{{enveloppeKeyId}}"
+                }
+              ]
+            },
+            "description": "Retrieve the content of an envelope. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "76d64415-42b4-53aa-8aef-b99801de1ca7",
+          "name": "GET /dossiers/{dossierId}/bank/invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bank/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bank",
+                "invoices"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Retrieve a list of unbalanced invoices. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "17e5522f-c6b6-5655-9470-283bce0696ab",
+          "name": "GET /dossiers/{dossierId}/bank/paymentlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bank/paymentlist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bank",
+                "paymentlist"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Retrieve the payment list. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "7726c62a-37a1-5e48-8901-6c64011dc3a3",
+      "name": "bookyears",
+      "item": [
+        {
+          "id": "84c4eb12-38c8-5e62-9d19-759a2aeaa5d4",
+          "name": "GET /dossiers/{dossierId}/bookyears",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Bookyears. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "22d02dbe-2087-5ee9-8596-66ede312a6f4",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                }
+              ]
+            },
+            "description": "Get bookyear. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "4fa9740e-8e4f-54da-8727-10a39a9b6e36",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/bookings/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/bookings/modified?journalTypeId=-1&modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "bookings",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "journalTypeId",
+                  "value": "-1",
+                  "disabled": false
+                },
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                },
+                {
+                  "key": "modifiedTimeStampTo",
+                  "value": "",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                }
+              ]
+            },
+            "description": "Get modified bookings. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "79492f08-621e-5ad9-80df-5d2dbcc430de",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                }
+              ]
+            },
+            "description": "Get Journals. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "017fccfd-4223-57c4-8255-6d70c83c9621",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/A/{sequenceNumber}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/A/:sequenceNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                "A",
+                ":sequenceNumber"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "sequenceNumber",
+                  "value": "{{sequenceNumber}}"
+                }
+              ]
+            },
+            "description": "Get Buy journal. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "9b22bdde-9413-5ec7-9066-6cd422e29546",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/D/{sequenceNumber}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/D/:sequenceNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                "D",
+                ":sequenceNumber"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "sequenceNumber",
+                  "value": "{{sequenceNumber}}"
+                }
+              ]
+            },
+            "description": "Get Divers journal. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "36f74a7c-5ddc-5af1-b137-1f13119ab165",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/F/{sequenceNumber}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/F/:sequenceNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                "F",
+                ":sequenceNumber"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "sequenceNumber",
+                  "value": "{{sequenceNumber}}"
+                }
+              ]
+            },
+            "description": "Get Financial journal. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "de8beabf-b983-5c33-86b1-33f35fb864d7",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/L/{sequenceNumber}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/L/:sequenceNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                "L",
+                ":sequenceNumber"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "sequenceNumber",
+                  "value": "{{sequenceNumber}}"
+                }
+              ]
+            },
+            "description": "Get Delivery journal. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "7455d5ae-0e18-5e78-87b2-090697582aef",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/V/{sequenceNumber}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/V/:sequenceNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                "V",
+                ":sequenceNumber"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "sequenceNumber",
+                  "value": "{{sequenceNumber}}"
+                }
+              ]
+            },
+            "description": "Get Sell journal. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "8e18e842-34c3-5065-9db0-c4d4a376434c",
+          "name": "GET /dossiers/{dossierId}/bookyears/{bookyearId}/journals/{journalKey}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/bookyears/:bookyearId/journals/:journalKey",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "bookyears",
+                ":bookyearId",
+                "journals",
+                ":journalKey"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                },
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}"
+                },
+                {
+                  "key": "journalKey",
+                  "value": "{{journalKey}}"
+                }
+              ]
+            },
+            "description": "Get Financial Journal Balance. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "1f820ce0-7344-52a0-82e8-66352cb12a72",
+      "name": "buysellbookings",
+      "item": [
+        {
+          "id": "421ecdd7-0fa5-5e7b-b2c1-f72133faae2d",
+          "name": "GET /dossiers/{dossierId}/buysellbookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/buysellbookings?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "buysellbookings"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Buy Sell Booking. Daglimiet volgens de officiële spec: 10 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "0ea410da-542a-54b3-859a-94491039df57",
+          "name": "GET /dossiers/{dossierId}/buysellbookings/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/buysellbookings/modified?bookyearId={{bookyearId}}&modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "buysellbookings",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified Buy/Sell Bookings. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "602db641-42dd-5845-b5cc-3ef6a239b909",
+      "name": "costcentres",
+      "item": [
+        {
+          "id": "b5699b07-face-5176-9781-62bf5d2a16f5",
+          "name": "GET /dossiers/{dossierId}/costcentres",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/costcentres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "costcentres"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Costcentres. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "bfa90966-1480-5cd9-b59e-b501ddb942b8",
+          "name": "GET /dossiers/{dossierId}/costcentres/active",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/costcentres/active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "costcentres",
+                "active"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Active (closed = false) Costcentres. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "47778c59-84eb-5518-9123-36eab0410fa8",
+      "name": "currencies",
+      "item": [
+        {
+          "id": "19386761-f689-5da8-b169-772d76440fd9",
+          "name": "GET /dossiers/{dossierId}/currencies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/currencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "currencies"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get currency codes. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "7b9db999-e10c-56fd-9cb0-de8df633c6fd",
+      "name": "customfields",
+      "item": [
+        {
+          "id": "5042f400-dd25-5257-86fb-211c41272055",
+          "name": "GET /dossiers/{dossierId}/customfields",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/customfields",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "customfields"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Custom Fields. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "3e3005c9-c684-5309-8ec2-fc0acaa31ce6",
+      "name": "deliverynotes",
+      "item": [
+        {
+          "id": "efc83204-37f1-57f2-88af-e59ccb0a147c",
+          "name": "GET /dossiers/{dossierId}/deliverynotes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/deliverynotes?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "deliverynotes"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Delivery Note. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "c8bf71c3-9e88-52fe-89d8-ea13af35cf16",
+          "name": "GET /dossiers/{dossierId}/deliverynotes/export",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/deliverynotes/export?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=&returnDeliveryNote=&returnPdfDocument=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "deliverynotes",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "returnDeliveryNote",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "returnPdfDocument",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Export Delivery Note. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "b0d5569f-45ab-5cbb-a4ba-a3ebeb992362",
+          "name": "GET /dossiers/{dossierId}/deliverynotes/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/deliverynotes/modified?bookyearId={{bookyearId}}&modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "deliverynotes",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified Delivery Notes. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "1d2dc658-cac3-54d7-bec8-255eeb974550",
+      "name": "dossiers",
+      "item": [
+        {
+          "id": "1597c838-a73e-567f-a2e3-d983185bb730",
+          "name": "GET /dossiers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers"
+              ]
+            },
+            "description": "Get Dossiers. Daglimiet volgens de officiële spec: 150 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "c7f0a723-ad7d-5ead-b8a3-682f98d67ee2",
+      "name": "error",
+      "item": [
+        {
+          "id": "41dff426-2d42-5374-85b8-49365fde98b7",
+          "name": "GET /error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/error?errorCode=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "error"
+              ],
+              "query": [
+                {
+                  "key": "errorCode",
+                  "value": "1",
+                  "disabled": false
+                },
+                {
+                  "key": "localeId",
+                  "value": "{{localeId}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generate error. Daglimiet volgens de officiële spec: 100 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "5c8d36e5-2119-5948-bd88-0c5674bab531",
+      "name": "financialdiversbookings",
+      "item": [
+        {
+          "id": "66476027-a429-5a2f-9e74-88e68c024b18",
+          "name": "GET /dossiers/{dossierId}/financialdiversbookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/financialdiversbookings?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "financialdiversbookings"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Financial Divers Booking. Daglimiet volgens de officiële spec: 10 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "619eae9b-a02c-5655-bd42-f10548da0b17",
+          "name": "GET /dossiers/{dossierId}/financialdiversbookings/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/financialdiversbookings/modified?bookyearId={{bookyearId}}&modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "financialdiversbookings",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified Financial Divers Bookings. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "c4bca115-4c82-5768-946e-306e37f35a9a",
+      "name": "invoices",
+      "item": [
+        {
+          "id": "86f055c4-6896-552e-8b56-674899182907",
+          "name": "GET /dossiers/{dossierId}/invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/invoices?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "invoices"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Invoice. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "9c9b49bf-af66-5c26-b6cc-f1e921986a75",
+          "name": "GET /dossiers/{dossierId}/invoices/export",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/invoices/export?bookyearId={{bookyearId}}&journalKey=&documentSeqNr=&returnInvoice=&returnPdfDocument=&returnEInvoiceXml=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "invoices",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "documentSeqNr",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "returnInvoice",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "returnPdfDocument",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "returnEInvoiceXml",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Export Invoice. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "3650f7cd-2997-5b7f-8b90-02cef62b9fa1",
+          "name": "GET /dossiers/{dossierId}/invoices/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/invoices/modified?bookyearId={{bookyearId}}&modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "invoices",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "bookyearId",
+                  "value": "{{bookyearId}}",
+                  "disabled": false
+                },
+                {
+                  "key": "journalKey",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified invoices. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "0f57b439-2543-5be1-b77b-93860fd93a4d",
+      "name": "journals",
+      "item": [
+        {
+          "id": "c6cff65c-da46-5088-a2d5-c31c56d3b43c",
+          "name": "GET /dossiers/{dossierId}/journals/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/journals/modified?modifiedTimeStamp={{modifiedTimeStamp}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "journals",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get modified journals. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "aff486f1-41c0-5497-9c02-441d3b01e6d5",
+      "name": "productgroups",
+      "item": [
+        {
+          "id": "b73b1e3e-6391-5eee-b6fd-54f09f78fb29",
+          "name": "GET /dossiers/{dossierId}/productgroups",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/productgroups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "productgroups"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Productgroups. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "fe8e15d5-6145-5450-924d-296d914d077e",
+      "name": "products",
+      "item": [
+        {
+          "id": "d56710b6-05ed-5a20-add9-4def1ec90f11",
+          "name": "GET /dossiers/{dossierId}/products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "products"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Products. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "f5d33eed-b6ce-5614-b917-d09d1211a22b",
+      "name": "rappels",
+      "item": [
+        {
+          "id": "d30da8b5-318f-5f6a-948e-4e739ce39f16",
+          "name": "GET /dossiers/{dossierId}/rappels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/rappels?expirationDate=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "rappels"
+              ],
+              "query": [
+                {
+                  "key": "expirationDate",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Rappel information. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        },
+        {
+          "id": "2184c08f-e798-594a-853e-e9d8e7068631",
+          "name": "GET /dossiers/{dossierId}/rappels/export",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/rappels/export?relationId=&rappelId=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "rappels",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "relationId",
+                  "value": "",
+                  "disabled": false
+                },
+                {
+                  "key": "rappelId",
+                  "value": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Export Rappel. Daglimiet volgens de officiële spec: 400 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "061c3fb2-1d88-54f9-b0d4-9fe10809b934",
+      "name": "relations",
+      "item": [
+        {
+          "id": "879c9385-fef9-5f43-aefa-9166934eb107",
+          "name": "GET /dossiers/{dossierId}/relations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/relations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "relations"
+              ],
+              "query": [
+                {
+                  "key": "relationId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "extRelationId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "vatNr",
+                  "value": "",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Relations. Daglimiet volgens de officiële spec: 2 per dag (400 met zoekparameters). Lees-operatie."
+          }
+        },
+        {
+          "id": "5d5cda4d-28a8-599a-9ebe-0ff04d1fe4b6",
+          "name": "GET /dossiers/{dossierId}/relations/modified",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/relations/modified",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "relations",
+                "modified"
+              ],
+              "query": [
+                {
+                  "key": "modifiedTimeStamp",
+                  "value": "{{modifiedTimeStamp}}",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get Modified Relations. Daglimiet volgens de officiële spec: 48 per dag. Lees-operatie."
+          }
+        }
+      ]
+    },
+    {
+      "id": "33b3b551-acb9-5e10-b22d-4eb27d9084ff",
+      "name": "reports",
+      "item": [
+        {
+          "id": "3af70ab2-0fd3-5706-b47b-b91346ced214",
+          "name": "POST /dossiers/{dossierId}/reports/accounts/history",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/accounts/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "accounts",
+                "history"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get history account report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "7e9db50f-b2ff-5ca9-85a5-ebf80fed83b7",
+          "name": "POST /dossiers/{dossierId}/reports/accounts/open",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/accounts/open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "accounts",
+                "open"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get open account report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"toBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"fromBookyearPeriodNr\": 1,\n  \"toBookyearPeriodNr\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "fc1fdc79-4cfe-522e-9f4a-81999f7c759f",
+          "name": "POST /dossiers/{dossierId}/reports/clients/history",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/clients/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "clients",
+                "history"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get history client report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "5ac82df8-a33b-5824-8f81-b52a3083f107",
+          "name": "POST /dossiers/{dossierId}/reports/clients/open",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/clients/open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "clients",
+                "open"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get open client report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"toBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"fromBookyearPeriodNr\": 1,\n  \"toBookyearPeriodNr\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "94e29e53-d6a8-5529-b9fe-a9647ee9e4c5",
+          "name": "POST /dossiers/{dossierId}/reports/costcentres/history",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/costcentres/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "costcentres",
+                "history"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get history costcentre report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "0bd3a070-8139-5c49-8e5b-1a59be965fa8",
+          "name": "POST /dossiers/{dossierId}/reports/suppliers/history",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/suppliers/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "suppliers",
+                "history"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get history supplier report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "4bbf7aba-10ad-5045-b32b-d2ab22344423",
+          "name": "POST /dossiers/{dossierId}/reports/suppliers/open",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/reports/suppliers/open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "reports",
+                "suppliers",
+                "open"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get open supplier report. Daglimiet volgens de officiële spec: 24 per dag. Lees-operatie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"toBookyearKey\": {\n    \"id\": \"{{bookyearId}}\"\n  },\n  \"fromBookyearPeriodNr\": 1,\n  \"toBookyearPeriodNr\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "b74a45b5-5030-5017-96a6-c31daf1fe5ea",
+      "name": "vatcodes",
+      "item": [
+        {
+          "id": "d8062e56-698b-507e-b6ff-3a7592cf6e51",
+          "name": "GET /dossiers/{dossierId}/vatcodes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "dossierToken",
+                "value": "{{dossierToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/:dossierId/vatcodes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                ":dossierId",
+                "vatcodes"
+              ],
+              "variable": [
+                {
+                  "key": "dossierId",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            },
+            "description": "Get VAT Codes. Daglimiet volgens de officiële spec: 2 per dag. Lees-operatie."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://service.inaras.be/octopus-rest-api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "dossierToken",
+      "value": ""
+    }
+  ]
+}
