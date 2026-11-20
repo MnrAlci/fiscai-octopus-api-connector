@@ -83,7 +83,7 @@ def test_cli_doctor_quota_version_completion(cli, capsys):
     assert "naamsvermelding" in out and "test-password" not in out
     assert cli.main(["quota", "--json"]) == 0
     assert "GET /dossiers/{dossierId}/accounts" in capsys.readouterr().out
-    assert cli.main(["version"]) == 0 and "0.1.0" in capsys.readouterr().out
+    assert cli.main(["version"]) == 0 and "1.0.0" in capsys.readouterr().out
     assert cli.main(["completion", "bash"]) == 0 and "octopus-api-connector" in capsys.readouterr().out
 
 
