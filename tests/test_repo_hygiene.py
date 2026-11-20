@@ -209,3 +209,18 @@ def test_generated_files_up_to_date(tmp_path, script, paths):
 def test_skill_frontmatter():
     s = (ROOT / "skills/fiscai-octopus-api-connector/SKILL.md").read_text(encoding="utf-8")
     assert s.startswith("---\nname: fiscai-octopus-api-connector\ndescription: ")
+
+
+def test_mcpb_bundle_reproducible(tmp_path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_mcpb", ROOT / "scripts" / "build_mcpb.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    m = mod.manifest()
+    assert m["license"] == "Apache-2.0" and "Powered by FISCALCI Accounting & Tax (Askin Alci)" in m["description"]
+    assert m["version"] == tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+    sj = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    pkg = sj["packages"][0]
+    assert pkg["registryType"] == "mcpb" and pkg["identifier"].endswith(f"/v{m['version']}/fiscai-octopus-api-connector-{m['version']}.mcpb")
+    assert len(pkg["fileSha256"]) == 64
+    assert "pypi" not in json.dumps(sj).lower()

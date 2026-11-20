@@ -2,6 +2,19 @@
 
 All notable changes are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses [semantic versioning](https://semver.org/).
 
+## [1.0.0] - 2026-11-20
+
+### Added
+- Release packaging: reproducible `.mcpb` bundle (`scripts/build_mcpb.py`), registry metadata (`server.json`, type `mcpb`), release checklist in `docs/maintainers/RELEASE.md`.
+
+### Changed
+- Version 1.0.0. Registry metadata no longer points to PyPI; the bundle is distributed through the GitHub release.
+- Dependabot configuration: grouped weekly updates with commit prefixes.
+
+### Notes
+- README (EN/NL) now states clearly that the connector is not yet tested against a live Octopus dossier; feedback welcome through issues.
+- Tested offline against a mocked API built from the official specification. Not yet validated against a live Octopus dossier (see `docs/OPEN-QUESTIONS.md`).
+
 ## [0.1.0] - 2026-11-20
 
 ### Added

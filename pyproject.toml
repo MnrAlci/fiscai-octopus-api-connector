@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fiscai-octopus-api-connector"
-version = "0.1.0"
+version = "1.0.0"
 description = "Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf and other MCP clients): read-only access to the Octopus accounting REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. Powered by FISCALCI Accounting & Tax (Askin Alci)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ license-files = ["LICENSE", "NOTICE"]
 authors = [{name = "Askin Alci"}]
 keywords = ["mcp", "mcp-server", "model-context-protocol", "octopus", "accounting", "bookkeeping", "belgium", "vat", "mar", "read-only"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Financial and Insurance Industry",
     "Natural Language :: Dutch",
     "Natural Language :: English",

@@ -15,6 +15,8 @@ DESC = ("Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf 
         "REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. "
         "Powered by FISCALCI Accounting & Tax (Askin Alci)")
 REPO = f"https://github.com/MnrAlci/{SLUG}"
+# SHA-256 van het release-bestand (python scripts/build_mcpb.py); wordt bij het release-moment vernieuwd.
+MCPB_SHA256 = (ROOT / "scripts" / "mcpb.sha256").read_text(encoding="utf-8").strip() if (ROOT / "scripts" / "mcpb.sha256").exists() else "0" * 64
 KEYWORDS = ["octopus", "boekhouding", "accounting", "belgie", "mcp", "proefbalans", "debiteuren", "crediteuren", "dossieroverdracht"]
 
 # (naam, titel, beschrijving, geheim, verplicht, standaard)
@@ -67,7 +69,8 @@ def main() -> None:
         "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json", "name": f"io.github.MnrAlci/{SLUG}", "title": NAME,
         "description": "Read-only Octopus REST API for Belgian accountants. Powered by FISCALCI Accounting & Tax (Askin Alci)",
         "repository": {"url": REPO, "source": "github"}, "websiteUrl": REPO, "version": VERSION,
-        "packages": [{"registryType": "pypi", "registryBaseUrl": "https://pypi.org", "identifier": SLUG, "version": VERSION, "runtimeHint": "uvx",
+        "packages": [{"registryType": "mcpb",
+                      "identifier": f"{REPO}/releases/download/v{VERSION}/{SLUG}-{VERSION}.mcpb", "version": VERSION, "fileSha256": MCPB_SHA256,
                       "transport": {"type": "stdio"},
                       "environmentVariables": [{"name": n, "description": d, "isRequired": req, "format": "string", "isSecret": sec, **({"default": df} if df else {})}
                                                for n, _, d, sec, req, df in VARS]}]})

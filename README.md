@@ -22,11 +22,13 @@ Author: Askin Alci
 
 > **Belgium.** Made for Belgian accountants and bookkeepers: it follows the Belgian chart of accounts (MAR) and Belgian VAT. Outside Belgium, check the local rules yourself.
 
+> **Not yet tested against a live Octopus dossier.** This connector has only been tested against a mocked API built from the official specification (there is no Octopus sandbox). Feedback and findings are welcome through [GitHub issues](https://github.com/MnrAlci/fiscai-octopus-api-connector/issues). Open points: `docs/OPEN-QUESTIONS.md`.
+
 **Nederlandse samenvatting.** Bedoeld voor Belgische boekhouders/accountants; gebaseerd op Belgische boekhoud- en btw-regels (MAR, Belgisch btw-stelsel). Gebruik buiten België: verifieer zelf de lokale regels. Zie [README.nl.md](README.nl.md).
 
 ## About
 
-FISCAi Octopus API Connector is a local MCP server (stdio) and command-line tool that lets Grok Bot and other MCP clients read Octopus dossiers: fiscal years, journals, chart of accounts, balances per period, booking lines, customers and suppliers, open items and reports. On top of that it builds what the API does not offer directly (a **trial balance**, ageing, MAR key figures) and produces exports and a **dossier transfer package per fiscal year** for the next accountant. Status: **0.1.0 (alpha)**, tested offline against a mocked API built from the official specification; not yet validated against a live Octopus dossier (see [open questions](docs/OPEN-QUESTIONS.md)).
+FISCAi Octopus API Connector is a local MCP server (stdio) and command-line tool that lets Grok Bot and other MCP clients read Octopus dossiers: fiscal years, journals, chart of accounts, balances per period, booking lines, customers and suppliers, open items and reports. On top of that it builds what the API does not offer directly (a **trial balance**, ageing, MAR key figures) and produces exports and a **dossier transfer package per fiscal year** for the next accountant. Status: **1.0.0**, tested offline against a mocked API built from the official specification; not yet validated against a live Octopus dossier (see [open questions](docs/OPEN-QUESTIONS.md)).
 
 ## Contents
 
