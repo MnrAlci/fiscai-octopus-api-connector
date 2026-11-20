@@ -1,0 +1,114 @@
+{
+  "name": "fiscai-octopus-api-connector",
+  "description": "Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf and other MCP clients): read-only access to the Octopus accounting REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. Powered by FISCALCI Accounting & Tax (Askin Alci)",
+  "author": {
+    "name": "Askin Alci"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/MnrAlci/fiscai-octopus-api-connector#readme",
+  "repository": "https://github.com/MnrAlci/fiscai-octopus-api-connector",
+  "keywords": [
+    "octopus",
+    "boekhouding",
+    "accounting",
+    "belgie",
+    "mcp",
+    "proefbalans",
+    "debiteuren",
+    "crediteuren",
+    "dossieroverdracht"
+  ],
+  "displayName": "FISCAi Octopus API Connector",
+  "version": "0.1.0",
+  "logo": "assets/logo.png",
+  "skills": "./skills/",
+  "rules": [
+    "./agents/cursor/octopus-core.mdc",
+    "./agents/cursor/octopus-accountant.mdc"
+  ],
+  "agents": [
+    "./agents/claude/octopus-accountant.md"
+  ],
+  "mcpServers": {
+    "fiscai-octopus-api-connector": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "${CURSOR_PLUGIN_ROOT}/server/run_server.py"
+      ],
+      "cwd": "${CURSOR_PLUGIN_ROOT}",
+      "env": {
+        "OCTOPUS_SOFTWARE_HOUSE_UUID": "${OCTOPUS_SOFTWARE_HOUSE_UUID}",
+        "OCTOPUS_USER": "${OCTOPUS_USER}",
+        "OCTOPUS_PASSWORD": "${OCTOPUS_PASSWORD}",
+        "OCTOPUS_CACHE_KEY": "${OCTOPUS_CACHE_KEY}",
+        "OCTOPUS_LOCALE_ID": "${OCTOPUS_LOCALE_ID}",
+        "OCTOPUS_ALLOWED_DOSSIERS": "${OCTOPUS_ALLOWED_DOSSIERS}",
+        "OCTOPUS_QUOTA_RESERVE": "${OCTOPUS_QUOTA_RESERVE}",
+        "OCTOPUS_AMOUNTS_MODE": "${OCTOPUS_AMOUNTS_MODE}",
+        "OCTOPUS_WRITE_ENABLED": "${OCTOPUS_WRITE_ENABLED}",
+        "OCTOPUS_WRITE_MAX_PER_DAY": "${OCTOPUS_WRITE_MAX_PER_DAY}"
+      }
+    }
+  },
+  "variables": {
+    "type": "object",
+    "properties": {
+      "OCTOPUS_SOFTWARE_HOUSE_UUID": {
+        "type": "string",
+        "title": "Software house UUID",
+        "description": "UUID die Octopus aan uw software toekent (header softwareHouseUuid). Geheim."
+      },
+      "OCTOPUS_USER": {
+        "type": "string",
+        "title": "Octopus-gebruiker",
+        "description": "Gebruikersnaam (e-mail) van de Octopus-gebruiker met API-toegang. Geheim."
+      },
+      "OCTOPUS_PASSWORD": {
+        "type": "string",
+        "title": "Octopus-wachtwoord",
+        "description": "Wachtwoord van die gebruiker. Alleen in het geheugen; nooit gelogd. Geheim."
+      },
+      "OCTOPUS_CACHE_KEY": {
+        "type": "string",
+        "title": "Cachesleutel",
+        "description": "Optioneel, minstens 16 tekens: versleutelt de lokale cache en synchronisatie op schijf. Zonder sleutel alleen in het geheugen. Geheim."
+      },
+      "OCTOPUS_LOCALE_ID": {
+        "type": "string",
+        "title": "Taal-id",
+        "description": "localeId voor het dossiertoken (0-4, standaard 1; verifieer actuele regel)."
+      },
+      "OCTOPUS_ALLOWED_DOSSIERS": {
+        "type": "string",
+        "title": "Toegelaten dossiers",
+        "description": "Optioneel: komma-gescheiden dossier-id's; andere dossiers worden geweigerd."
+      },
+      "OCTOPUS_QUOTA_RESERVE": {
+        "type": "string",
+        "title": "Reserve op daglimiet",
+        "description": "Aantal calls per endpoint dat de connector vrijhoudt (standaard 0)."
+      },
+      "OCTOPUS_AMOUNTS_MODE": {
+        "type": "string",
+        "title": "Modus saldi",
+        "description": "movement (beweging per periode, standaard) of cumulative. Verifieer actuele regel met de controle in de dossieroverdracht."
+      },
+      "OCTOPUS_WRITE_ENABLED": {
+        "type": "string",
+        "title": "Schrijven toestaan",
+        "description": "Standaard uit. Alleen true zet de tweestaps-schrijftools aan."
+      },
+      "OCTOPUS_WRITE_MAX_PER_DAY": {
+        "type": "string",
+        "title": "Maximum schrijfacties per dag",
+        "description": "1 tot 200, standaard 20."
+      }
+    },
+    "required": [
+      "OCTOPUS_SOFTWARE_HOUSE_UUID",
+      "OCTOPUS_USER",
+      "OCTOPUS_PASSWORD"
+    ]
+  }
+}

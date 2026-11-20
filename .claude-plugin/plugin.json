@@ -1,0 +1,72 @@
+{
+  "name": "fiscai-octopus-api-connector",
+  "version": "0.1.0",
+  "description": "Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf and other MCP clients): read-only access to the Octopus accounting REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. Powered by FISCALCI Accounting & Tax (Askin Alci)",
+  "author": {
+    "name": "Askin Alci"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/MnrAlci/fiscai-octopus-api-connector#readme",
+  "repository": "https://github.com/MnrAlci/fiscai-octopus-api-connector",
+  "keywords": [
+    "octopus",
+    "boekhouding",
+    "accounting",
+    "belgie",
+    "mcp",
+    "proefbalans",
+    "debiteuren",
+    "crediteuren",
+    "dossieroverdracht"
+  ],
+  "skills": [
+    "./skills/"
+  ],
+  "agents": [
+    "./agents/claude/octopus-accountant.md"
+  ],
+  "mcpServers": {
+    "fiscai-octopus-api-connector": {
+      "command": "python3",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/run_server.py"
+      ],
+      "env": {
+        "OCTOPUS_SOFTWARE_HOUSE_UUID": "${user_config.octopus_software_house_uuid}",
+        "OCTOPUS_USER": "${user_config.octopus_user}",
+        "OCTOPUS_PASSWORD": "${user_config.octopus_password}",
+        "OCTOPUS_CACHE_KEY": "${user_config.octopus_cache_key}"
+      }
+    }
+  },
+  "userConfig": {
+    "octopus_software_house_uuid": {
+      "type": "string",
+      "title": "Software house UUID",
+      "description": "UUID die Octopus aan uw software toekent (header softwareHouseUuid). Geheim.",
+      "sensitive": true,
+      "required": true
+    },
+    "octopus_user": {
+      "type": "string",
+      "title": "Octopus-gebruiker",
+      "description": "Gebruikersnaam (e-mail) van de Octopus-gebruiker met API-toegang. Geheim.",
+      "sensitive": true,
+      "required": true
+    },
+    "octopus_password": {
+      "type": "string",
+      "title": "Octopus-wachtwoord",
+      "description": "Wachtwoord van die gebruiker. Alleen in het geheugen; nooit gelogd. Geheim.",
+      "sensitive": true,
+      "required": true
+    },
+    "octopus_cache_key": {
+      "type": "string",
+      "title": "Cachesleutel",
+      "description": "Optioneel, minstens 16 tekens: versleutelt de lokale cache en synchronisatie op schijf. Zonder sleutel alleen in het geheugen. Geheim.",
+      "sensitive": true,
+      "required": false
+    }
+  }
+}
