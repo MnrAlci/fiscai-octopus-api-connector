@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "fiscai-octopus-api-connector": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "./server/run_server.py"
+      ],
+      "env": {
+        "OCTOPUS_SOFTWARE_HOUSE_UUID": "${OCTOPUS_SOFTWARE_HOUSE_UUID}",
+        "OCTOPUS_USER": "${OCTOPUS_USER}",
+        "OCTOPUS_PASSWORD": "${OCTOPUS_PASSWORD}",
+        "OCTOPUS_CACHE_KEY": "${OCTOPUS_CACHE_KEY}",
+        "OCTOPUS_LOCALE_ID": "${OCTOPUS_LOCALE_ID}",
+        "OCTOPUS_ALLOWED_DOSSIERS": "${OCTOPUS_ALLOWED_DOSSIERS}",
+        "OCTOPUS_QUOTA_RESERVE": "${OCTOPUS_QUOTA_RESERVE}",
+        "OCTOPUS_AMOUNTS_MODE": "${OCTOPUS_AMOUNTS_MODE}",
+        "OCTOPUS_WRITE_ENABLED": "${OCTOPUS_WRITE_ENABLED}",
+        "OCTOPUS_WRITE_MAX_PER_DAY": "${OCTOPUS_WRITE_MAX_PER_DAY}"
+      }
+    }
+  }
+}
