@@ -1,6 +1,6 @@
 {
   "name": "fiscai-octopus-api-connector",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Plugin for Grok Bot (also works with Copilot, Claude, Cursor, Windsurf and other MCP clients): read-only access to the Octopus accounting REST API for Belgian accountants, with daily-limit protection, local sync, trial balance, export and dossier transfer per fiscal year. Powered by FISCALCI Accounting & Tax (Askin Alci)",
   "author": {
     "name": "Askin Alci"

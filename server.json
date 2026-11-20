@@ -8,14 +8,13 @@
     "source": "github"
   },
   "websiteUrl": "https://github.com/MnrAlci/fiscai-octopus-api-connector",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "packages": [
     {
-      "registryType": "pypi",
-      "registryBaseUrl": "https://pypi.org",
-      "identifier": "fiscai-octopus-api-connector",
-      "version": "0.1.0",
-      "runtimeHint": "uvx",
+      "registryType": "mcpb",
+      "identifier": "https://github.com/MnrAlci/fiscai-octopus-api-connector/releases/download/v1.0.0/fiscai-octopus-api-connector-1.0.0.mcpb",
+      "version": "1.0.0",
+      "fileSha256": "17fa9c4358d1aa18fa223e77329ff7221518b37b93a733c84c145ed8d680ca45",
       "transport": {
         "type": "stdio"
       },

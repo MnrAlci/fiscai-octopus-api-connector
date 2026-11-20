@@ -19,7 +19,7 @@
     "dossieroverdracht"
   ],
   "displayName": "FISCAi Octopus API Connector",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "logo": "assets/logo.png",
   "skills": "./skills/",
   "rules": [
