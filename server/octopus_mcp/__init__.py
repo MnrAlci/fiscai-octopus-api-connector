@@ -6,7 +6,7 @@ from accounting_api_core import ConnectorProfile, configure
 
 from . import edition
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 SECRET_ENV = ("OCTOPUS_PASSWORD", "OCTOPUS_SOFTWARE_HOUSE_UUID", "OCTOPUS_CACHE_KEY", "OCTOPUS_USER")
 

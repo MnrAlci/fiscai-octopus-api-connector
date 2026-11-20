@@ -26,7 +26,7 @@ Author: Askin Alci
 
 ## About
 
-FISCAi Octopus API Connector is a local MCP server (stdio) and command-line tool that lets Grok Bot and other MCP clients read Octopus dossiers: fiscal years, journals, chart of accounts, balances per period, booking lines, customers and suppliers, open items and reports. On top of that it builds what the API does not offer directly (a **trial balance**, ageing, MAR key figures) and produces exports and a **dossier transfer package per fiscal year** for the next accountant. Status: **0.1.0 (alpha)**, tested offline against a mocked API built from the official specification; not yet validated against a live Octopus dossier (see [open questions](docs/OPEN-QUESTIONS.md)).
+FISCAi Octopus API Connector is a local MCP server (stdio) and command-line tool that lets Grok Bot and other MCP clients read Octopus dossiers: fiscal years, journals, chart of accounts, balances per period, booking lines, customers and suppliers, open items and reports. On top of that it builds what the API does not offer directly (a **trial balance**, ageing, MAR key figures) and produces exports and a **dossier transfer package per fiscal year** for the next accountant. Status: **1.0.0**, tested offline against a mocked API built from the official specification; not yet validated against a live Octopus dossier (see [open questions](docs/OPEN-QUESTIONS.md)).
 
 ## Contents
 
