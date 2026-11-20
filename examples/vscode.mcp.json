@@ -1,0 +1,44 @@
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "octopus-software-house-uuid",
+      "description": "OCTOPUS_SOFTWARE_HOUSE_UUID (stored by VS Code, not in this file)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "octopus-user",
+      "description": "OCTOPUS_USER (stored by VS Code, not in this file)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "octopus-password",
+      "description": "OCTOPUS_PASSWORD (stored by VS Code, not in this file)",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "octopus-cache-key",
+      "description": "OCTOPUS_CACHE_KEY (stored by VS Code, not in this file)",
+      "password": true
+    }
+  ],
+  "servers": {
+    "fiscai-octopus-api-connector": {
+      "type": "stdio",
+      "command": "/ABSOLUTE/PATH/TO/fiscai-octopus-api-connector/.venv/bin/python",
+      "args": [
+        "/ABSOLUTE/PATH/TO/fiscai-octopus-api-connector/server/run_server.py"
+      ],
+      "env": {
+        "OCTOPUS_SOFTWARE_HOUSE_UUID": "${input:octopus-software-house-uuid}",
+        "OCTOPUS_USER": "${input:octopus-user}",
+        "OCTOPUS_PASSWORD": "${input:octopus-password}",
+        "OCTOPUS_CACHE_KEY": "${input:octopus-cache-key}",
+        "OCTOPUS_LOCALE_ID": "1"
+      }
+    }
+  }
+}
