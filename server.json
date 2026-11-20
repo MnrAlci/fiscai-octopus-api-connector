@@ -1,0 +1,101 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.MnrAlci/fiscai-octopus-api-connector",
+  "title": "FISCAi Octopus API Connector",
+  "description": "Read-only Octopus REST API for Belgian accountants. Powered by FISCALCI Accounting & Tax (Askin Alci)",
+  "repository": {
+    "url": "https://github.com/MnrAlci/fiscai-octopus-api-connector",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/MnrAlci/fiscai-octopus-api-connector",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "fiscai-octopus-api-connector",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "OCTOPUS_SOFTWARE_HOUSE_UUID",
+          "description": "UUID die Octopus aan uw software toekent (header softwareHouseUuid). Geheim.",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "OCTOPUS_USER",
+          "description": "Gebruikersnaam (e-mail) van de Octopus-gebruiker met API-toegang. Geheim.",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "OCTOPUS_PASSWORD",
+          "description": "Wachtwoord van die gebruiker. Alleen in het geheugen; nooit gelogd. Geheim.",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "OCTOPUS_CACHE_KEY",
+          "description": "Optioneel, minstens 16 tekens: versleutelt de lokale cache en synchronisatie op schijf. Zonder sleutel alleen in het geheugen. Geheim.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "OCTOPUS_LOCALE_ID",
+          "description": "localeId voor het dossiertoken (0-4, standaard 1; verifieer actuele regel).",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "default": "1"
+        },
+        {
+          "name": "OCTOPUS_ALLOWED_DOSSIERS",
+          "description": "Optioneel: komma-gescheiden dossier-id's; andere dossiers worden geweigerd.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "OCTOPUS_QUOTA_RESERVE",
+          "description": "Aantal calls per endpoint dat de connector vrijhoudt (standaard 0).",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "default": "0"
+        },
+        {
+          "name": "OCTOPUS_AMOUNTS_MODE",
+          "description": "movement (beweging per periode, standaard) of cumulative. Verifieer actuele regel met de controle in de dossieroverdracht.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "default": "movement"
+        },
+        {
+          "name": "OCTOPUS_WRITE_ENABLED",
+          "description": "Standaard uit. Alleen true zet de tweestaps-schrijftools aan.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "default": "false"
+        },
+        {
+          "name": "OCTOPUS_WRITE_MAX_PER_DAY",
+          "description": "1 tot 200, standaard 20.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "default": "20"
+        }
+      ]
+    }
+  ]
+}
