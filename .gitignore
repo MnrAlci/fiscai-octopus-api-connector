@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+*.env
+!.env.example
+# Uitvoer bevat dossiergegevens: nooit committen
+octopus-export*/
+overdracht*/
+transfer*/
+workflow-output/
+workflows.toml
+.fiscai-octopus-api-connector/
+.DS_Store
