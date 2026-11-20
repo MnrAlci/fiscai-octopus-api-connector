@@ -1,0 +1,31 @@
+# VOORBEELD, geen actieve workflow: dit bestand staat in examples/ en draait nergens. Kopieer het naar .github/workflows/ in een PRIVÉ-repository
+# of, liever, gebruik een zelfgehoste runner: de uitvoer bevat klantgegevens. Geen geheimen in de repository: gebruik versleutelde secrets
+# (Settings > Secrets and variables > Actions). Verify current docs: https://docs.github.com/actions
+# Powered by FISCALCI Accounting & Tax (Askin Alci)
+name: octopus-workflows-voorbeeld
+on:
+  schedule:
+    - cron: "30 6 * * 1-5"   # UTC; scheduled workflows kunnen vertraagd of overgeslagen worden
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  workflows:
+    runs-on: ubuntu-latest      # klantgegevens: overweeg een zelfgehoste runner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install .
+      - name: Voorbereidingen maken (alleen lezen; concepten als .eml)
+        env:
+          OCTOPUS_SOFTWARE_HOUSE_UUID: ${{ secrets.OCTOPUS_SOFTWARE_HOUSE_UUID }}
+          OCTOPUS_USER: ${{ secrets.OCTOPUS_USER }}
+          OCTOPUS_PASSWORD: ${{ secrets.OCTOPUS_PASSWORD }}
+          OCTOPUS_CACHE_KEY: ${{ secrets.OCTOPUS_CACHE_KEY }}
+          OCTOPUS_WF_ICS_URL: ${{ secrets.OCTOPUS_WF_ICS_URL }}
+        run: octopus-api-connector workflows run -w workflows.toml --out "$RUNNER_TEMP/workflow-output" --quiet
+      # Let op: een GitHub-runner bewaart de lokale synchronisatie niet tussen runs; elke run laadt het rekeningschema opnieuw
+      # (GET /accounts: 2 per dag). Een eigen machine of self-hosted runner met OCTOPUS_DATA_DIR spaart de daglimieten.
+      # Bewust GEEN upload-artifact: de uitvoer bevat klantgegevens. Schrijf naar een beschermde locatie van uzelf als u de bestanden wilt bewaren.
